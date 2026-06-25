@@ -1,16 +1,20 @@
 const express = require('express');
-const router = express.Router();
+const app = express();
 
-const BarController = require('../controllers/BarController');
-const PromocaoController = require('../controllers/PromocaoController');
+const BarController = require('./src/controllers/BarController');
+const PromocaoController = require('./src/controllers/PromocaoController');
 
-// --- ROTAS DO GERENTE (ABA ADM) ---
-router.post('/bares', BarController.cadastrar);
-router.post('/promocoes', PromocaoController.criar);
+// 1. Configurações Iniciais Obligatórias (Ficam sempre no topo)
+app.use(express.json()); // Permite o Express ler dados enviados em JSON
+app.use(express.static('public')); // Libera a pasta public para acessar index.html e admin.html
 
-// --- ROTAS DO CLIENTE (APLICATIVO) ---
-router.get('/bares', BarController.listar);
-router.get('/promocoes', PromocaoController.listarAtivas);
-router.get('/promocoes/categoria/:categoria', PromocaoController.filtrarPorCategoria);
+// 2. --- ROTAS DO GERENTE (ABA ADM) ---
+app.post('/api/bares', BarController.cadastrar);
+app.post('/api/promocoes', PromocaoController.criar);
 
-module.exports = router;
+// 3. --- ROTAS DO CLIENTE (APLICATIVO) ---
+app.get('/api/bares', BarController.listar);
+app.get('/api/promocoes', PromocaoController.listarAtivas);
+app.get('/api/promocoes/categoria/:categoria', PromocaoController.filtrarPorCategoria);
+
+module.exports = app;
